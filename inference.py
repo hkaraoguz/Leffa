@@ -10,9 +10,13 @@ from leffa_utils.utils import resize_and_center, list_dir, get_agnostic_mask_hd,
 from preprocess.humanparsing.run_parsing import Parsing
 from preprocess.openpose.run_openpose import OpenPose
 
+import torch
+print(torch.cuda.is_available())  # Should return True if CUDA is available.
+print(torch.version.cuda)
+torch.cuda.set_device(0)  
 
 # Download checkpoints
-snapshot_download(repo_id="franciszzj/Leffa", local_dir="./ckpts")
+#snapshot_download(repo_id="franciszzj/Leffa", local_dir="./ckpts")
 
 
 class LeffaPredictor(object):
@@ -51,7 +55,7 @@ class LeffaPredictor(object):
         ref_image_path,
         control_type,
         ref_acceleration=True,
-        step=50,
+        step=10,
         scale=2.5,
         seed=42,
         vt_model_type="viton_hd",
@@ -133,7 +137,7 @@ if __name__ == "__main__":
     #person2_images = list_dir(f"{example_dir}/person2")
     #garment_images = list_dir(f"{example_dir}/garment")
 
-    leffa_predictor.leffa_predict_vt("person.jpg", "garment.jpg", True, 50, 2.5, 42, "viton_hd", "upper_body", False)
+    leffa_predictor.leffa_predict_vt("person.jpg", "garment.jpg", True, 10, 2.5, 42, "viton_hd", "upper_body", False)
                     
 
        
