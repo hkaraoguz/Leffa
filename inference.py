@@ -4,7 +4,6 @@ from huggingface_hub import snapshot_download
 from leffa.transform import LeffaTransform
 from leffa.model import LeffaModel
 from leffa.inference import LeffaInference
-from leffa_utils.garment_agnostic_mask_predictor import AutoMasker
 from leffa_utils.densepose_predictor import DensePosePredictor
 from leffa_utils.utils import resize_and_center, list_dir, get_agnostic_mask_hd, get_agnostic_mask_dc
 from preprocess.humanparsing.run_parsing import Parsing
@@ -21,11 +20,7 @@ torch.cuda.set_device(0)
 
 class LeffaPredictor(object):
     def __init__(self):
-        self.mask_predictor = AutoMasker(
-            densepose_path="./ckpts/densepose",
-            schp_path="./ckpts/schp",
-        )
-
+        
         self.densepose_predictor = DensePosePredictor(
             config_path="./ckpts/densepose/densepose_rcnn_R_50_FPN_s1x.yaml",
             weights_path="./ckpts/densepose/model_final_162be9.pkl",
@@ -73,15 +68,15 @@ class LeffaPredictor(object):
 
         # Mask
         if control_type == "virtual_tryon":
+            
             src_image = src_image.convert("RGB")
             model_parse, _ = self.parsing(src_image.resize((384, 512)))
             keypoints = self.openpose(src_image.resize((384, 512)))
+            
             if vt_model_type == "viton_hd":
                 mask = get_agnostic_mask_hd(
                     model_parse, keypoints, vt_garment_type)
-            elif vt_model_type == "dress_code":
-                mask = get_agnostic_mask_dc(
-                    model_parse, keypoints, vt_garment_type)
+            
             mask = mask.resize((768, 1024))
            
         # DensePose
@@ -91,15 +86,7 @@ class LeffaPredictor(object):
                     src_image_array)[:, :, ::-1]
                 src_image_seg = Image.fromarray(src_image_seg_array)
                 densepose = src_image_seg
-            elif vt_model_type == "dress_code":
-                src_image_iuv_array = self.densepose_predictor.predict_iuv(
-                    src_image_array)
-                src_image_seg_array = src_image_iuv_array[:, :, 0:1]
-                src_image_seg_array = np.concatenate(
-                    [src_image_seg_array] * 3, axis=-1)
-                src_image_seg = Image.fromarray(src_image_seg_array)
-                densepose = src_image_seg
-        
+             
         # Leffa
         transform = LeffaTransform()
 
