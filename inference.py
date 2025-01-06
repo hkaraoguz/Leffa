@@ -12,7 +12,7 @@ from preprocess.openpose.run_openpose import OpenPose
 
 
 # Download checkpoints
-#snapshot_download(repo_id="franciszzj/Leffa", local_dir="./ckpts")
+snapshot_download(repo_id="franciszzj/Leffa", local_dir="./ckpts")
 
 
 class LeffaPredictor(object):
