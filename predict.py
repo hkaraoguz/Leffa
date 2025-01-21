@@ -45,7 +45,7 @@ class Predictor(BasePredictor):
         self.parsing = Parsing(atr_path="./ckpts/humanparsing/parsing_atr.onnx",
                                lip_path="./ckpts/humanparsing/parsing_lip.onnx")
         vt_model_hd = LeffaModel(pretrained_model_name_or_path="./ckpts/stable-diffusion-inpainting",
-                                 pretrained_model="./ckpts/virtual_tryon.pth")
+                                 pretrained_model="./ckpts/virtual_tryon.pth", dtype="float16")
         
         self.vt_inference_hd = LeffaInference(model=vt_model_hd)
 

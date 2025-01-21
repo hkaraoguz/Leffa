@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Cog files
+.cog/
+
+
 # Distribution / packaging
 .Python
 build/

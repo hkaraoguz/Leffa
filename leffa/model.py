@@ -23,6 +23,7 @@ class LeffaModel(nn.Module):
         new_in_channels: int = 12,  # noisy_image: 4, mask: 1, masked_image: 4, densepose: 3
         height: int = 1024,
         width: int = 768,
+        dtype: str = "float16",
     ):
         super().__init__()
 
@@ -34,6 +35,9 @@ class LeffaModel(nn.Module):
             pretrained_model,
             new_in_channels,
         )
+
+        if dtype == "float16":
+            self.half()
 
     def build_models(
         self,
